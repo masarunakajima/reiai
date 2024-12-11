@@ -45,4 +45,6 @@ def extract_addresses(text, client, model, params={}):
     prompt = text
     params["response_format"] = "json"
 
-    return gpt_base.chat_completion_simple(client, model, system_prompt, prompt, params)
+    return gpt_base.chat_completion_simple(
+        client, model, system_prompt, prompt, params
+    )

@@ -47,5 +47,8 @@ def chat_completion_simple(client, model, system_prompt, prompt, params):
     :param params: Dictionary of parameters (e.g. max_tokens, temperature)
     """
 
-    messages = [{"role": "system", "content": system_prompt}, {"role": "user", "content": prompt}]
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": prompt},
+    ]
     return chat_completion(client, model, messages, params)
