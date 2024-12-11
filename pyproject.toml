@@ -1,0 +1,34 @@
+[build-system]
+# Specifies the build system requirements.
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+# Metadata for the package
+name = "reiai"
+description = "GPT tools for real estate data processing"
+authors = [
+    {name = "Masaru Nakajima", email = "masarun@usc.edu"},
+]
+license = {text = "MIT"}
+
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    'openai',
+]
+dynamic = ["version"]
+
+[tool.setuptools.packages.find]
+where = ["reiai"]
+include = ["reiai*"]
+exclude = [
+    "gpt_base"
+]
+
+[tool.black]
+line-length = 78
+
+[tool.isort]
+profile = "black"
+line_length = 78

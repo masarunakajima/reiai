@@ -1,0 +1,4 @@
+build
+gpt.py
+*egg-info*
+*__pycache__
