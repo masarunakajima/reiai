@@ -16,14 +16,21 @@ readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
     'openai',
+    "pytest",
+    "pypdf",
+    "googlemaps",
 ]
 dynamic = ["version"]
 
+[project.scripts]
+reiai = "reiai.cli:cli"
+
+
 [tool.setuptools.packages.find]
-where = ["reiai"]
+where = ["."]
 include = ["reiai*"]
 exclude = [
-    "gpt_base"
+    "gpt_base",
 ]
 
 [tool.black]
