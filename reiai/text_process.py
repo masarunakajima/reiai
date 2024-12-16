@@ -140,7 +140,7 @@ def lookup_address(addresses, api_key):
         address_df = pd.concat([address_df, pd.DataFrame([data])], ignore_index=True)
     
     # remove duplicate full addresses
-    address_df = addresses.drop_duplicates(subset=["full_address"])
-    address_df = addresses.reset_index(drop=True)
+    address_df = address_df.drop_duplicates(subset=["full_address"])
+    address_df = address_df.reset_index(drop=True)
 
     return address_df
