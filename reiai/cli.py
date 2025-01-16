@@ -54,14 +54,12 @@ def extract_addresses_pdf(
 @cli.command()
 @click.argument("input_path")
 @click.argument("output_path")
-@click.argument("extra_strings", nargs=-1)
 @click.option("--api-key", help="Google Map API key")
-def geocode_lookup(input_path, output_path, extra_strings, api_key):
+def geocode_lookup(input_path, output_path, api_key):
     """
     Given a list of address strings, return the geocoded addresses.
     :param input_path: path to input json file with key "addresses"
     :param output_path: path to output file
-    :param extra_strings: Extra address strings
     :param api_key: Google Map API key
     """
 
@@ -77,6 +75,14 @@ def geocode_lookup(input_path, output_path, extra_strings, api_key):
     if "addresses" not in data:
         raise ValueError("Input json file must have key 'addresses'")
     addresses = data["addresses"]
+    extra_strings = []
+    for key, val in data.items():
+        if key == "city":
+            extra_strings.append(val)
+        if key == "state":
+            extra_strings.append(val)
+        if key == "zip":
+            extra_strings.append(val)
     addresses = [address + ", " + ", ".join(extra_strings) for address in addresses]
     addresses = text_process.lookup_address(addresses, api_key)
     addresses.to_csv(output_path, index=False)

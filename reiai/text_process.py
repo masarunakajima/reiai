@@ -144,3 +144,51 @@ def lookup_address(addresses, api_key):
     address_df = address_df.reset_index(drop=True)
 
     return address_df
+
+
+def gpt_map_fields(input_fields, target_fields, client, model, params={}):
+    """
+    Map input fields to target fields.
+    :param input_fields: List of input fields
+    :param target_fields: List of target fields
+    :param client: OpenAI API client
+    :param model: GPT model
+    :param params: Dictionary of parameters (e.g. max_tokens, temperature)
+    :return: Dictionary mapping input fields to target fields
+    """
+
+    system_prompt = """
+    You are a helpful assistant for a real estate investor.
+    You are given a list of input fields and a list of target fields.
+    You need to map the input fields to the target fields.
+    The input fields are the fields extracted from a document.
+    The target fields are the fields in a database.
+    Skip the input fields that are not relevant to the target fields.
+    Make sure any input field maps to at most one target field.
+    The output should be in json format without any other text before.
+    Example output would be:
+    """
+    system_prompt += """
+    {
+        "field_mapping": {
+            "address": "property_address",
+            "price": "property_price",
+            "bedrooms": "property_bedrooms"
+        }
+    }
+    """
+    prompt = "[Input Fields]\n"
+    for field in input_fields:
+        prompt += f"- {field}\n"
+    prompt += "\n[Target Fields]\n"
+    for field in target_fields:
+        prompt += f"- {field}\n"
+
+    params["response_format"] = {"type": "json_object"}
+
+    response = gpt_base.chat_completion_simple(
+        client, model, system_prompt, prompt, params
+    )
+    json_data, usage = gpt_base.parse_gpt_chat_response_json(response)
+    field_mapping = json_data.get("field_mapping", {})
+    return field_mapping, usage
