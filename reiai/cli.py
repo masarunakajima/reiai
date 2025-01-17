@@ -86,3 +86,31 @@ def geocode_lookup(input_path, output_path, api_key):
     addresses = [address + ", " + ", ".join(extra_strings) for address in addresses]
     addresses = text_process.lookup_address(addresses, api_key)
     addresses.to_csv(output_path, index=False)
+
+
+@cli.command()
+@click.argument("input_path")
+@click.argument("output_path")
+@click.argument("pivot_field")
+def pivot_long_to_wide(input_path, output_path, pivot_field):
+    """
+    Pivot long format to wide format.
+    :param input_path: path to input csv file
+    :param output_path: path to output csv file
+    :param pivot_field: field to pivot
+    """
+
+    df = pd.read_csv(input_path)
+    columns = list(df.columns)
+    if pivot_field not in columns:
+        raise ValueError(f"{pivot_field} not in columns")
+    # remove duplicate by pivot_field
+    df = df.drop_duplicates(subset=[pivot_field])
+    columns.remove(pivot_field)
+    field_count = pivot_field + "_count"
+    df[field_count] = df.groupby(columns, dropna=False).cumcount() + 1
+    pivoted_df = df.pivot(index=columns, columns=field_count, values=pivot_field)
+    pivoted_df = pivoted_df.reset_index()   
+    pivoted_df.columns.name = None
+    pivoted_df.columns = columns + [f"{pivot_field}_{i}" for i in range(1, pivoted_df.shape[1] - len(columns) + 1)]
+    pivoted_df.to_csv(output_path, index=False) 
