@@ -58,6 +58,12 @@ def parse_geocode_output(geocode_result):
         elif "subpremise" in types:
             output["subpremise"] = component["long_name"]
 
+    for component in geocode_result["geometry"]:
+        if component == "location":
+            latlon = geocode_result["geometry"][component]
+            output["latitude"] = latlon["lat"]
+            output["longitude"] = latlon["lng"]
+
     full_address = geocode_result["formatted_address"]
     output["full_address"] = full_address
     output["address"] = full_address.split(",")[0]
